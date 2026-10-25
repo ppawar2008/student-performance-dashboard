@@ -83,6 +83,50 @@ if selected_subject != "All Subjects":
         filtered["Subject"].astype(str) == selected_subject
     ]
 
+st.divider()
+
+st.subheader("👤 Individual Student Report Card")
+
+student_names = sorted(
+    df["Student"].astype(str).unique().tolist()
+)
+
+selected_student = st.selectbox(
+    "Select a student",
+    student_names
+)
+
+student_records = df[
+    df["Student"].astype(str) == selected_student
+]
+
+c1, c2, c3 = st.columns(3)
+
+c1.metric(
+    "Average Marks",
+    f"{student_records['Marks'].mean():.1f}/100"
+)
+
+c2.metric(
+    "Average Attendance",
+    f"{student_records['Attendance'].mean():.1f}%"
+)
+
+c3.metric(
+    "Total Subjects",
+    student_records["Subject"].nunique()
+)
+
+st.write("### 📚 Subject-wise Performance")
+
+st.dataframe(
+    student_records[
+        ["Subject", "Marks", "Attendance"]
+    ].sort_values("Subject"),
+    use_container_width=True,
+    hide_index=True
+)
+
 left, right = st.columns(2)
 
 with left:
