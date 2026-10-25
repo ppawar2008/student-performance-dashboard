@@ -134,8 +134,40 @@ st.write(
     f"{filtered['Attendance'].mean():.1f}%"
 )
 
+
 st.subheader("📋 Student Records")
-st.dataframe(filtered, use_container_width=True)
+
+student_table = filtered.copy()
+
+# Sort records by student and subject
+subject_order = ["Maths", "Python", "Statistics"]
+student_table["Subject"] = pd.Categorical(
+    student_table["Subject"],
+    categories=subject_order,
+    ordered=True
+)
+student_table = student_table.sort_values(
+    ["Student", "Subject"]
+).reset_index(drop=True)
+
+# Serial number starts from 1
+student_table.insert(
+    0, "Sr. No.", range(1, len(student_table) + 1)
+)
+
+# Show each student's name only once
+student_table.loc[
+    student_table["Student"].eq(
+        student_table["Student"].shift()
+    ),
+    "Student"
+] = ""
+
+st.dataframe(
+    student_table,
+    use_container_width=True,
+    hide_index=True
+)
 
 st.caption(
     "Demo dashboard built with Python, Pandas, Plotly and Streamlit."
