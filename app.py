@@ -223,6 +223,17 @@ st.write(
 
 st.subheader("📋 Student Records")
 
+
+# Download filtered student records
+csv_data = filtered.to_csv(index=False).encode("utf-8")
+
+st.download_button(
+    label="📥 Download Student Records (CSV)",
+    data=csv_data,
+    file_name="student_performance_report.csv",
+    mime="text/csv"
+)
+
 student_table = filtered.copy()
 
 # Sort records by student and subject
