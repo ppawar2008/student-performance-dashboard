@@ -127,6 +127,48 @@ st.dataframe(
     hide_index=True
 )
 
+st.divider()
+
+st.subheader("🚨 Student Performance Alerts")
+
+# Calculate each student's average marks and attendance
+student_summary = (
+    df.groupby("Student")
+    .agg(
+        Average_Marks=("Marks", "mean"),
+        Average_Attendance=("Attendance", "mean")
+    )
+    .reset_index()
+)
+
+# Find students who need attention
+low_marks = student_summary[
+    student_summary["Average_Marks"] < 40
+]
+
+low_attendance = student_summary[
+    student_summary["Average_Attendance"] < 75
+]
+
+if low_marks.empty and low_attendance.empty:
+    st.success("✅ No students currently meet the alert criteria!")
+else:
+    if not low_marks.empty:
+        st.warning("📉 Students with average marks below 40")
+        st.dataframe(
+            low_marks.round(1),
+            use_container_width=True,
+            hide_index=True
+        )
+
+    if not low_attendance.empty:
+        st.warning("📅 Students with average attendance below 75%")
+        st.dataframe(
+            low_attendance.round(1),
+            use_container_width=True,
+            hide_index=True
+        )
+
 left, right = st.columns(2)
 
 with left:
